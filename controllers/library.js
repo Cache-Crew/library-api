@@ -2,6 +2,7 @@
 
 // check if user has permision
 // upload book cover
+
 // validate information
 export const addBook = async (req, res, next) => {
     try {
@@ -18,28 +19,50 @@ export const addBook = async (req, res, next) => {
     }
 }
 
-// get Books
+// get all Books
+export const getAllBooks = async (req, res, next) => {
+    try {
+        const allbooks = await LibraryModel.find();
+        res.status(200).json(allbooks);
+    } catch (error) {
+        next(error);
+    }
+
+}
+
+// get specific Books
 export const getBookById = async (req, res, next) => {
     try {
         const uniqueBook = await BookModel.findById(req.params.id);
         if (!uniqueBook) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        res.status(201).json(uniqueBook);
+        res.status(204).json(uniqueBook);
     } catch (error) {
         next(error)
     }
 };
-// update tasks
+// update book
 export const updateBook = async (req, res, next) => {
     try {
         const book = await LibraryModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!book) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        res.status(201).json(book);
+        res.status(204).json(book);
     } catch (error) {
         next(error);
     }
 };
-    
+    // delete book
+export const deleteBook = async(req, res, next) => {
+    try {
+        const deletedbook = await Task.findByIdAndDelete(req.params.id);
+        if (!deletedbook) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+        res.status(200).json({ message: `${deletedbook.title} deleted!`});
+    } catch (error) {
+        next(error);
+    }
+  }
